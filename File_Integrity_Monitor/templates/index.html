@@ -1,0 +1,8 @@
+<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>File Integrity Monitor</title>
+<style>body{font-family:Arial;background:#111827;color:white;max-width:1000px;margin:auto;padding:25px}input,button{padding:12px;margin:6px;border-radius:8px;border:0}input{background:#374151;color:white}button{background:#2563eb;color:white}table{width:100%;border-collapse:collapse}td,th{padding:10px;border-bottom:1px solid #374151}.Unchanged{color:#4ade80}.Modified{color:#fbbf24}.Missing{color:#f87171}</style>
+<h1>Secure File Integrity Monitor</h1><p>SHA-256 based defensive monitoring.</p><input id="name" value="sample.txt"><button onclick="add()">Register</button>
+<table><thead><tr><th>File</th><th>SHA-256</th><th>Status</th></tr></thead><tbody id="rows"></tbody></table>
+<script>
+async function load(){let a=await fetch("/api/files").then(r=>r.json());rows.innerHTML=a.map(x=>`<tr><td>${x.filename}</td><td style="font-size:10px">${x.hash}</td><td class="${x.status}">${x.status}</td></tr>`).join("")}
+async function add(){let f=new FormData();f.append("filename",name.value);let r=await fetch("/api/add",{method:"POST",body:f});let x=await r.json();if(!r.ok)alert(x.error);load()} load();setInterval(load,3000)
+</script>
